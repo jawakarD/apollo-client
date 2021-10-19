@@ -146,6 +146,7 @@ function readMultipartWHATWGStream(
   boundary: string,
   observer: Observer<any>,
 ) {
+  console.log("What the fuck?");
   // TODO: does this have to polyfilled? If there is a body, then there is likely a decoder.
   const decoder = new TextDecoder('utf8');
   let buffer = '';
@@ -156,6 +157,7 @@ function readMultipartWHATWGStream(
     reader.read()
       .then(iteration => {
         if (iteration.done) {
+          console.log("HELLO????");
           observer.complete?.();
           return;
         }
@@ -247,6 +249,8 @@ function readMultipartString(
 
     bi = buffer.indexOf(messageBoundary);
   }
+
+  observer.complete?.();
 }
 
 export class HttpLink extends ApolloLink {

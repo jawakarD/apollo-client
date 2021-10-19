@@ -1240,7 +1240,7 @@ describe('HttpLink', () => {
   });
 
   describe('multipart responses', () => {
-    it('works', done => {
+    it('can handle string bodies', done => {
       const body = [
         '---',
         'Content-Type: application/json; charset=utf-8',
@@ -1266,12 +1266,40 @@ describe('HttpLink', () => {
         fetch: fetch as any,
       });
 
+      let i = 0;
       execute(link, { query: sampleDeferredQuery }).subscribe(
         result => {
-          done();
+          try {
+            if (i === 0) {
+              expect(result).toEqual({
+                data: {
+                  stub: {
+                    id: "0",
+                  },
+                },
+                hasNext: true,
+              });
+            } else if (i === 1) {
+              expect(result).toEqual({
+                data: {
+                  name: 'stubby',
+                },
+                path: ['stub'],
+                hasNext: false,
+              });
+            }
+
+          } catch (err) {
+            done(err);
+          } finally {
+            i++;
+          }
         },
         err => {
           done(err);
+        },
+        () => {
+          done();
         },
       );
     });
